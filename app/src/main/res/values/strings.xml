@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Picture Translator</string>
-    <string name="take_picture">Take Picture</string>
+    <string name="take_picture_btn_string">Take Picture</string>
+    <string name="translation_history_string">Translation History</string>
 </resources>

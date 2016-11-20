@@ -4,4 +4,20 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.hugovieira.picturetranslator.io.example.hugovieira.picturetranslator.MainActivity"></RelativeLayout>
+    tools:context="io.github.hugoamvieira.picturetranslator.MainActivity">
+
+    <Button
+        android:id="@+id/take_picture_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/take_picture_btn_string"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:id="@+id/translation_history_btn"
+        android:layout_below="@+id/take_picture_btn"
+        android:layout_alignParentStart="true"
+        android:text="@string/translation_history_string"/>
+</RelativeLayout>
