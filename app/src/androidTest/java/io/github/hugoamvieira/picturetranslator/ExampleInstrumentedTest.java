@@ -1,4 +1,4 @@
-package com.example.hugovieira.picturetranslator;
+package io.github.hugoamvieira.picturetranslator;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

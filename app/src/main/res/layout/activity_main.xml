@@ -4,4 +4,4 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.hugovieira.picturetranslator.MainActivity"></RelativeLayout>
+    tools:context="com.example.hugovieira.picturetranslator.io.example.hugovieira.picturetranslator.MainActivity"></RelativeLayout>

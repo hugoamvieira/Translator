@@ -1,4 +1,4 @@
-package com.example.hugovieira.picturetranslator;
+package io.github.hugoamvieira.picturetranslator;
 
 // PictureTranslator by Hugo Vieira
 // Uses Material Camera by Aidan Follestad under the Apache v2.0 License
