@@ -82,7 +82,10 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setIndeterminate(false);
 
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+            Bitmap bitmapFull = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+
+            // Scale the image down by half
+            Bitmap bitmap = bitmapFull.createScaledBitmap(bitmapFull, bitmapFull.getWidth() / 2, bitmapFull.getHeight() / 2, false);
 
             CloudVisionAsyncTask cloudVisionAsync = new CloudVisionAsyncTask(bitmap, labelsTextView, progressBar);
             cloudVisionAsync.execute();

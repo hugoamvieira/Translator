@@ -60,7 +60,7 @@ public class CloudVisionAsyncTask extends AsyncTask<Object, Integer, String> {
 
                 // Compress the image to JPEG
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmapImg.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+                bitmapImg.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
                 byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
                 // Encode JPEG
