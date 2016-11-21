@@ -4,14 +4,22 @@ package io.github.hugoamvieira.picturetranslator;
 // Uses Material Camera by Aidan Follestad under the Apache v2.0 License
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialcamera.MaterialCamera;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,14 +62,44 @@ public class MainActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             Log.i(TAG, "Saved to: " + data.getDataString());
-
-            // Get Cloud Vision API data for translation
-
+            pushToCloudVision(data.getData());
 
         } else if (data != null) {
             Exception e = (Exception) data.getSerializableExtra(MaterialCamera.ERROR_EXTRA);
             e.printStackTrace();
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void pushToCloudVision(Uri uri) {
+        assert uri != null;
+
+        // Get textview to show the labels in. Get progress bar
+        TextView labelsTextView = (TextView) findViewById(R.id.labels_textview);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.vision_progressbar);
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setMax(100);
+        progressBar.setIndeterminate(false);
+
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+
+            CloudVisionAsyncTask cloudVisionAsync = new CloudVisionAsyncTask(bitmap, labelsTextView, progressBar);
+            cloudVisionAsync.execute();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Failed due to: " + e.getMessage());
+
+            // Output something for the user
+            Toast.makeText(this, "Image was not found", Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Failed due to: " + e.getMessage());
+
+            // Output something for the user
+            Toast.makeText(this, "Error in parsing image", Toast.LENGTH_SHORT).show();
         }
     }
 }
