@@ -20,9 +20,11 @@ import com.afollestad.materialcamera.MaterialCamera;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final static boolean HAVE_BILLING = false; // Means I don't have a Billing method to add to my GCP account..
     private final static int CAMERA_RQ = 6969; // Camera request code
     private final static String TAG = "PictureTranslator";
 
@@ -62,7 +64,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             Log.i(TAG, "Saved to: " + data.getDataString());
-            pushToCloudVision(data.getData());
+
+            // I don't have billing to enable Vision API
+            if (HAVE_BILLING)
+                pushToCloudVision(data.getData());
+
+            // This simulates the response
+            ArrayList<Label> labels = new ArrayList<>();
+            labels.add(new Label(96.8, "test"));
+
 
         } else if (data != null) {
             Exception e = (Exception) data.getSerializableExtra(MaterialCamera.ERROR_EXTRA);
