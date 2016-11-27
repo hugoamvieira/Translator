@@ -3,6 +3,7 @@ package io.github.hugoamvieira.picturetranslator;
 // PictureTranslator by Hugo Vieira
 // Uses Material Camera by Aidan Follestad under the Apache v2.0 License
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -25,11 +26,11 @@ import com.afollestad.materialcamera.MaterialCamera;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-//bf4b35a8b2de0ef0e5366b3ec64aa2887bfc6e69
 public class MainActivity extends AppCompatActivity {
 
     private final static boolean HAVE_BILLING = false; // Means I don't have a Billing method to add to my GCP account..
     private final static int CAMERA_RQ = 6969; // Camera request code
+    private Context context = this;
     protected final static String TAG = "picTrans";
 
     @Override
@@ -77,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
                 pushToCloudVision(data.getData());
 
             // This simulates the response that I would get from Cloud Vision Async
-            final String response = "Car";
+            final Label response = new Label(97.5f, "Car");
 
             EditText wordToTranslate = (EditText) findViewById(R.id.text_to_translate);
-            wordToTranslate.setText(response);
+            wordToTranslate.setText(response.getLabelName());
 
             // Get text view where the response is going to be put
             final TextView responseTextView = (TextView) findViewById(R.id.result_text);
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (!langTo.isEmpty()) {
-                        TranslateAsyncTask translate = new TranslateAsyncTask(response, langTo, responseTextView);
+                        TranslateAsyncTask translate = new TranslateAsyncTask(response, langTo, responseTextView, context);
                         translate.execute();
                     }
                 }
