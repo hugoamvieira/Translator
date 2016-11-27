@@ -34,17 +34,17 @@
         android:id="@+id/result_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:visibility="invisible">
 
         <EditText
             android:id="@+id/text_to_translate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:clickable="false"
             android:layout_marginBottom="10dp"
+            android:clickable="false"
             android:ems="10"
             android:focusable="false"
             android:inputType="none" />
@@ -53,19 +53,18 @@
             android:id="@+id/languages_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/text_to_translate"
+            android:layout_alignStart="@+id/text_to_translate"
             android:layout_below="@+id/text_to_translate"
             android:layout_marginBottom="20dp"
-            android:entries="@array/supported_translations"
-            android:layout_alignStart="@+id/text_to_translate"
-            android:layout_alignEnd="@+id/text_to_translate" />
+            android:entries="@array/supported_translations" />
 
         <TextView
             android:id="@+id/result_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_below="@+id/languages_spinner"
-            android:text="tetetetet"
+            android:layout_centerHorizontal="true"
             android:textSize="24sp" />
     </RelativeLayout>
 </RelativeLayout>
