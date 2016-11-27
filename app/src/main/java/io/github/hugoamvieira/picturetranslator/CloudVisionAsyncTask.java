@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -25,22 +26,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class CloudVisionAsyncTask extends AsyncTask<Object, Integer, String> {
+public class CloudVisionAsyncTask extends AsyncTask<String, Integer, String> {
     private static final String API_KEY = "";
-    private final static String TAG = "PictureTranslator";
 
     private Bitmap bitmapImg;
-    private TextView resultTextView;
+    private EditText resultEditText;
     private ProgressBar visionProgressBar;
 
-    public CloudVisionAsyncTask(Bitmap image, TextView textView, ProgressBar progressBar) {
+    public CloudVisionAsyncTask(Bitmap image, EditText resultEditText, ProgressBar progressBar) {
         this.bitmapImg = image;
-        this.resultTextView = textView;
+        this.resultEditText = resultEditText;
         this.visionProgressBar = progressBar;
     }
 
     @Override
-    protected String doInBackground(Object... objects) {
+    protected String doInBackground(String... strings) {
         try {
             HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
@@ -50,7 +50,7 @@ public class CloudVisionAsyncTask extends AsyncTask<Object, Integer, String> {
             visionBuilder.setVisionRequestInitializer(new VisionRequestInitializer(API_KEY));
             Vision vision = visionBuilder.build();
 
-            Log.d(TAG, "Vision builder created with API Key");
+            Log.d(MainActivity.TAG, "Vision builder created with API Key");
 
             // Create a batch request
             BatchAnnotateImagesRequest batchRequest = new BatchAnnotateImagesRequest();
@@ -60,7 +60,7 @@ public class CloudVisionAsyncTask extends AsyncTask<Object, Integer, String> {
 
                 // Compress the image to JPEG
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmapImg.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+                bitmapImg.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
                 byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
                 // Encode JPEG
@@ -79,7 +79,7 @@ public class CloudVisionAsyncTask extends AsyncTask<Object, Integer, String> {
                 add(imageRequest);
             }});
 
-            Log.d(TAG, "Image parsed and ready to go");
+            Log.d(MainActivity.TAG, "Image parsed and ready to go");
 
             Vision.Images.Annotate annotateReq = vision.images().annotate(batchRequest);
             annotateReq.setDisableGZipContent(true);
@@ -87,40 +87,48 @@ public class CloudVisionAsyncTask extends AsyncTask<Object, Integer, String> {
             // Get the response from cloud vision and return it as a string
             BatchAnnotateImagesResponse response = annotateReq.execute();
 
-            Log.d(TAG, "Got response");
+            Log.d(MainActivity.TAG, "Got response");
 
             return labelsToString(response);
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "Failed due to: " + e.getMessage());
+            Log.e(MainActivity.TAG, "Failed due to: " + e.getMessage());
         }
 
         return "Cloud Vision API request failed. This incident has been logged.";
     }
 
     protected void onPostExecute(String result) {
-        resultTextView.setText(result);
+        resultEditText.setText(result);
         visionProgressBar.setVisibility(View.INVISIBLE);
     }
 
 
     // Converts all the labels returned by cloud vision API to a string
     private String labelsToString(BatchAnnotateImagesResponse response) {
-        StringBuilder message = new StringBuilder();
-        message.append("I found these things:\n\n");
-
         List<EntityAnnotation> imageLabels = response.getResponses().get(0).getLabelAnnotations();
 
-        // If it can't find anything, return a message saying that nothing was found
-        if (imageLabels == null) message.append("nothing");
+        // If it can't find anything, return a message
+        if (imageLabels == null) return "No label was found for your image!";
 
-        // Append the labels and the confidence % for each
+        ArrayList<Label> labels = new ArrayList<>();
+        // Add the labels and the confidence % for each
         for (EntityAnnotation label : imageLabels) {
-            message.append(String.format(Locale.US, "%.2f: %s", label.getScore(), label.getDescription()));
-            message.append("\n");
+            labels.add(new Label(label.getConfidence(), label.getDescription()));
         }
 
-        return message.toString();
+        Label highestConfidenceLabel = new Label(0, "");
+        float confidence = 0f;
+
+        // Get the label with the highest confidence
+        for (Label l : labels) {
+            if (l.getConfidence() > confidence) {
+                confidence = l.getConfidence();
+                highestConfidenceLabel = l;
+            }
+        }
+
+        return highestConfidenceLabel.getLabelName();
     }
 }

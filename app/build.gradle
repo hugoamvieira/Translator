@@ -40,5 +40,7 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.apis/google-api-services-vision
     compile group: 'com.google.apis', name: 'google-api-services-vision', version: 'v1-rev30-1.22.0'
 
+    compile 'org.jsoup:jsoup:1.10.1'
+
     testCompile 'junit:junit:4.12'
 }

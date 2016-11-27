@@ -11,8 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,13 +24,13 @@ import com.afollestad.materialcamera.MaterialCamera;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 
+//bf4b35a8b2de0ef0e5366b3ec64aa2887bfc6e69
 public class MainActivity extends AppCompatActivity {
 
     private final static boolean HAVE_BILLING = false; // Means I don't have a Billing method to add to my GCP account..
     private final static int CAMERA_RQ = 6969; // Camera request code
-    private final static String TAG = "PictureTranslator";
+    protected final static String TAG = "picTrans";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +67,62 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode != CAMERA_RQ) return;
 
         if (resultCode == RESULT_OK) {
+            RelativeLayout resultsLayout = (RelativeLayout) findViewById(R.id.result_layout);
+            resultsLayout.setVisibility(View.VISIBLE);
+
             Log.i(TAG, "Saved to: " + data.getDataString());
 
             // I don't have billing to enable Vision API
             if (HAVE_BILLING)
                 pushToCloudVision(data.getData());
 
-            // This simulates the response
-            ArrayList<Label> labels = new ArrayList<>();
-            labels.add(new Label(96.8, "test"));
+            // This simulates the response that I would get from Cloud Vision Async
+            final String response = "Car";
+
+            EditText wordToTranslate = (EditText) findViewById(R.id.text_to_translate);
+            wordToTranslate.setText(response);
+
+            // Get text view where the response is going to be put
+            final TextView responseTextView = (TextView) findViewById(R.id.result_text);
+
+            // Get the language to translate to
+            Spinner translateLangs = (Spinner) findViewById(R.id.languages_spinner);
+            translateLangs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String langTo = "";
+                    switch (i) {
+                        case 1: // To PT
+                            langTo = "pt";
+                            break;
+
+                        case 2: // To ES
+                            langTo = "es";
+                            break;
+
+                        case 3: // To FR
+                            langTo = "fr";
+                            break;
+
+                        case 4: // To DE
+                            langTo = "de";
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    if (!langTo.isEmpty()) {
+                        TranslateAsyncTask translate = new TranslateAsyncTask(response, langTo, responseTextView);
+                        translate.execute();
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    // Do nothing
+                }
+            });
 
 
         } else if (data != null) {
@@ -85,8 +136,9 @@ public class MainActivity extends AppCompatActivity {
         assert uri != null;
 
         // Get textview to show the labels in. Get progress bar
-        TextView labelsTextView = (TextView) findViewById(R.id.labels_textview);
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.vision_progressbar);
+        EditText labelEditText = (EditText) findViewById(R.id.text_to_translate);
+
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setMax(100);
         progressBar.setIndeterminate(false);
@@ -97,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             // Scale the image down by half
             Bitmap bitmap = bitmapFull.createScaledBitmap(bitmapFull, bitmapFull.getWidth() / 2, bitmapFull.getHeight() / 2, false);
 
-            CloudVisionAsyncTask cloudVisionAsync = new CloudVisionAsyncTask(bitmap, labelsTextView, progressBar);
+            CloudVisionAsyncTask cloudVisionAsync = new CloudVisionAsyncTask(bitmap, labelEditText, progressBar);
             cloudVisionAsync.execute();
 
         } catch (FileNotFoundException e) {

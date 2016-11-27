@@ -1,14 +1,14 @@
 package io.github.hugoamvieira.picturetranslator;
 
 public class Label {
-    private double confidence;
+    private float confidence;
     private String labelName;
 
-    public double getConfidence() {
+    public float getConfidence() {
         return confidence;
     }
 
-    public void setConfidence(double confidence) {
+    public void setConfidence(float confidence) {
         this.confidence = confidence;
     }
 
@@ -21,7 +21,7 @@ public class Label {
     }
 
     
-    public Label(double confidence, String labelName) {
+    public Label(float confidence, String labelName) {
         setConfidence(confidence);
         setLabelName(labelName);
     }

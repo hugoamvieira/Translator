@@ -2,4 +2,13 @@
     <string name="app_name">Picture Translator</string>
     <string name="take_picture_btn_string">Take Picture</string>
     <string name="translation_history_string">Translation History</string>
+    <string name="translate_btn_string">Translate</string>
+
+    <string-array name="supported_translations">
+        <item>Select language</item>
+        <item>Português (Portugal)</item>
+        <item>Español</item>
+        <item>Français</item>
+        <item>Deutsch</item>
+    </string-array>
 </resources>
