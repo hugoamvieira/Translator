@@ -1,12 +1,13 @@
 package io.github.hugoamvieira.picturetranslator;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.http.HttpTransport;
@@ -24,23 +25,25 @@ import com.google.api.services.vision.v1.model.Image;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-public class CloudVisionAsyncTask extends AsyncTask<String, Integer, String> {
+
+public class CloudVisionAsyncTask extends AsyncTask<String, Integer, Label> {
     private static final String API_KEY = "";
 
     private Bitmap bitmapImg;
     private EditText resultEditText;
     private ProgressBar visionProgressBar;
+    private Context context;
 
-    public CloudVisionAsyncTask(Bitmap image, EditText resultEditText, ProgressBar progressBar) {
+    public CloudVisionAsyncTask(Bitmap image, EditText resultEditText, ProgressBar progressBar, Context context) {
         this.bitmapImg = image;
         this.resultEditText = resultEditText;
         this.visionProgressBar = progressBar;
+        this.context = context;
     }
 
     @Override
-    protected String doInBackground(String... strings) {
+    protected Label doInBackground(String... strings) {
         try {
             HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
@@ -89,28 +92,40 @@ public class CloudVisionAsyncTask extends AsyncTask<String, Integer, String> {
 
             Log.d(MainActivity.TAG, "Got response");
 
-            return labelsToString(response);
+            return getHighestConfidenceLabel(response);
 
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(MainActivity.TAG, "Failed due to: " + e.getMessage());
         }
 
-        return "Cloud Vision API request failed. This incident has been logged.";
+        return null;
     }
 
-    protected void onPostExecute(String result) {
-        resultEditText.setText(result);
+    protected void onPostExecute(Label result) {
+        if (result == null) {
+            Toast.makeText(context, "There was a problem accessing the Vision API", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        super.onPostExecute(result);
+
+        // How to pass the label components back to main:
+        resultEditText.setText(result.getLabelName());
+        // confidenceEditText.setText(result.getConfidence());
+
+        // And then in main, get the text on both ETs and create Label object :)
+
         visionProgressBar.setVisibility(View.INVISIBLE);
     }
 
 
     // Converts all the labels returned by cloud vision API to a string
-    private String labelsToString(BatchAnnotateImagesResponse response) {
+    private Label getHighestConfidenceLabel(BatchAnnotateImagesResponse response) {
         List<EntityAnnotation> imageLabels = response.getResponses().get(0).getLabelAnnotations();
 
         // If it can't find anything, return a message
-        if (imageLabels == null) return "No label was found for your image!";
+        if (imageLabels == null) return null;
 
         ArrayList<Label> labels = new ArrayList<>();
         // Add the labels and the confidence % for each
@@ -129,6 +144,6 @@ public class CloudVisionAsyncTask extends AsyncTask<String, Integer, String> {
             }
         }
 
-        return highestConfidenceLabel.getLabelName();
+        return highestConfidenceLabel;
     }
 }

@@ -100,6 +100,11 @@ public class TranslateAsyncTask extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String s) {
         getResponseTextView().setText(s);
 
+        if (s == null) {
+            Toast.makeText(context, "You need internet access to translate words!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
         String dateString = df.format(date);

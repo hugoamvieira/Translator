@@ -78,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
                 pushToCloudVision(data.getData());
 
             // This simulates the response that I would get from Cloud Vision Async
+            // I'd have to put both the confidence and the label on an edit text and
+            // create an object here based on those fields
+            // in order to avoid interfaces, but yeah.
             final Label response = new Label(97.5f, "Car");
 
             EditText wordToTranslate = (EditText) findViewById(R.id.text_to_translate);
@@ -150,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
             // Scale the image down by half
             Bitmap bitmap = bitmapFull.createScaledBitmap(bitmapFull, bitmapFull.getWidth() / 2, bitmapFull.getHeight() / 2, false);
 
-            CloudVisionAsyncTask cloudVisionAsync = new CloudVisionAsyncTask(bitmap, labelEditText, progressBar);
+            CloudVisionAsyncTask cloudVisionAsync = new CloudVisionAsyncTask(bitmap, labelEditText, progressBar, context);
             cloudVisionAsync.execute();
 
         } catch (FileNotFoundException e) {
