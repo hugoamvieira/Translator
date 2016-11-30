@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Picture Translator</string>
-    <string name="take_picture_btn_string">Take Picture</string>
+    <string name="app_name">Translator</string>
     <string name="translation_history_string">Translation History</string>
     <string name="translate_btn_string">Translate</string>
 
@@ -10,5 +9,7 @@
         <item>Español</item>
         <item>Français</item>
         <item>Deutsch</item>
+        <item>English</item>
+        <item>Russian</item>
     </string-array>
 </resources>

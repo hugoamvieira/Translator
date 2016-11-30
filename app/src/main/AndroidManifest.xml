@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.github.hugoamvieira.picturetranslator">
+    package="io.github.hugoamvieira.translator">
 
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -12,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="io.github.hugoamvieira.translator.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,16 +21,7 @@
         </activity>
 
         <activity
-            android:name="com.afollestad.materialcamera.CaptureActivity"
-            android:theme="@style/MaterialCamera.CaptureActivity" />
-
-        <activity
-            android:name="com.afollestad.materialcamera.CaptureActivity2"
-            android:theme="@style/MaterialCamera.CaptureActivity" />
-
-        <activity
-            android:name=".HistoryActivity"
-            android:label="@string/translation_history_string"></activity>
+            android:name="io.github.hugoamvieira.translator.HistoryActivity"
+            android:label="@string/translation_history_string" />
     </application>
-
 </manifest>

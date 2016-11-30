@@ -1,13 +1,13 @@
-package io.github.hugoamvieira.picturetranslator;
-
+package io.github.hugoamvieira.translator;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "picture_translator";
+    private static final String DATABASE_NAME = "translator";
     private static final int DATABASE_VERSION = 1;
 
 

@@ -29,17 +29,6 @@ dependencies {
     })
 
     compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.afollestad:material-camera:0.4.4'
-
-    // https://mvnrepository.com/artifact/com.google.api-client/google-api-client-android
-    compile group: 'com.google.api-client', name: 'google-api-client-android', version: '1.22.0' exclude module: 'httpclient'
-
-    // https://mvnrepository.com/artifact/com.google.api-client/google-api-client-gson
-    compile group: 'com.google.api-client', name: 'google-api-client-gson', version: '1.22.0' exclude module: 'httpclient'
-
-    // https://mvnrepository.com/artifact/com.google.apis/google-api-services-vision
-    compile group: 'com.google.apis', name: 'google-api-services-vision', version: 'v1-rev30-1.22.0'
-
     compile 'org.jsoup:jsoup:1.10.1'
 
     testCompile 'junit:junit:4.12'

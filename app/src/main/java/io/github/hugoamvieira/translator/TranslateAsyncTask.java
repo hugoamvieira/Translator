@@ -1,4 +1,4 @@
-package io.github.hugoamvieira.picturetranslator;
+package io.github.hugoamvieira.translator;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,8 +7,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.api.client.util.DateTime;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -20,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TranslateAsyncTask extends AsyncTask<String, Void, String> {
-    private Label word;
+    private String translateText;
     private String langTo;
     private String translateBaseURL = "https://translate.google.com/";
     private TextView responseTextView;
@@ -28,12 +26,12 @@ public class TranslateAsyncTask extends AsyncTask<String, Void, String> {
 
     private URL builtTranslateURL;
 
-    public Label getWord() {
-        return word;
+    public String getTranslateText() {
+        return translateText;
     }
 
-    public void setWord(Label _word) {
-        this.word = _word;
+    public void setTranslateText(String _word) {
+        this.translateText = _word;
     }
 
     public String getLangTo() {
@@ -60,14 +58,15 @@ public class TranslateAsyncTask extends AsyncTask<String, Void, String> {
         this.context = _context;
     }
 
-    public TranslateAsyncTask(Label _word, String _langTo, TextView _responseTextView, Context _context) {
-        setWord(_word);
+
+    public TranslateAsyncTask(String _word, String _langTo, TextView _responseTextView, Context _context) {
+        setTranslateText(_word);
         setLangTo(_langTo);
         setResponseTextView(_responseTextView);
         setContext(_context);
 
         // Build the URL
-        translateBaseURL += "/m?sl=en&hl=" + getLangTo() + "&q=" + getWord().getLabelName();
+        translateBaseURL += "/m?sl=auto&hl=" + getLangTo() + "&q=" + getTranslateText();
         try {
             builtTranslateURL = new URL(translateBaseURL);
             Log.d(MainActivity.TAG, builtTranslateURL.toString());
@@ -76,6 +75,7 @@ public class TranslateAsyncTask extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
     }
+
 
     @Override
     protected String doInBackground(String... strings) {
@@ -96,6 +96,7 @@ public class TranslateAsyncTask extends AsyncTask<String, Void, String> {
         return null;
     }
 
+
     @Override
     protected void onPostExecute(String s) {
         getResponseTextView().setText(s);
@@ -113,8 +114,7 @@ public class TranslateAsyncTask extends AsyncTask<String, Void, String> {
         SQLiteDatabase database = new DBHelper(getContext()).getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(DBContract.Translation.COLUMN_LABEL_NAME, getWord().getLabelName());
-        values.put(DBContract.Translation.COLUMN_LABEL_CONFIDENCE, getWord().getConfidence());
+        values.put(DBContract.Translation.COLUMN_OG_TEXT, getTranslateText());
         values.put(DBContract.Translation.COLUMN_LABEL_TRANSLATION_LANG, getLangTo());
         values.put(DBContract.Translation.COLUMN_TRANSLATION, s);
         values.put(DBContract.Translation.COLUMN_TRANSLATION_DATE, dateString);

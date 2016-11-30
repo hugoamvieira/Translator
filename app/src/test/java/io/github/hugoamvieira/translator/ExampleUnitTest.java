@@ -1,4 +1,4 @@
-package io.github.hugoamvieira.picturetranslator;
+package io.github.hugoamvieira.translator;
 
 import org.junit.Test;
 
