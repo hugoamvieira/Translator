@@ -14,11 +14,18 @@
         android:layout_alignParentTop="true"
         android:text="@string/translation_history_string" />
 
+    <Button
+        android:id="@+id/paste_clipboard_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/translation_history_btn"
+        android:text="@string/paste_clipboard_btn_string" />
+
     <RelativeLayout
         android:id="@+id/result_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/translation_history_btn"
+        android:layout_below="@+id/paste_clipboard_btn"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp">
 

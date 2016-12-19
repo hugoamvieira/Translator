@@ -1,5 +1,7 @@
 package io.github.hugoamvieira.translator;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -121,6 +123,10 @@ public class TranslateAsyncTask extends AsyncTask<String, Void, String> {
 
         long rowId = database.insert(DBContract.Translation.TABLE_NAME, null, values);
 
-        Toast.makeText(context, "Your translation has been successfully saved. ID: " + rowId, Toast.LENGTH_SHORT).show();
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData data = ClipData.newPlainText("Translation", s);
+        clipboard.setPrimaryClip(data);
+
+        Toast.makeText(context, "Your translation has been successfully saved and copied to clipboard.", Toast.LENGTH_LONG).show();
     }
 }

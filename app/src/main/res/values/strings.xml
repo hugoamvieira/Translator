@@ -2,6 +2,7 @@
     <string name="app_name">Translator</string>
     <string name="translation_history_string">Translation History</string>
     <string name="translate_btn_string">Translate</string>
+    <string name="paste_clipboard_btn_string">Paste Text from Clipboard</string>
 
     <string-array name="supported_translations">
         <item>Select language</item>

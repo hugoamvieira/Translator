@@ -2,6 +2,8 @@ package io.github.hugoamvieira.translator;
 
 // Translator by Hugo Vieira
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import static android.content.ClipDescription.MIMETYPE_TEXT_PLAIN;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -25,7 +30,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Get UI elements
-        Button translationHistBtn = (Button) findViewById(R.id.translation_history_btn);
+        final Button translationHistBtn = (Button) findViewById(R.id.translation_history_btn);
+        final Button pasteFromClipboardBtn = (Button) findViewById(R.id.paste_clipboard_btn);
+        final EditText textToTranslateEditText = (EditText) findViewById(R.id.text_to_translate);
+        final Spinner translateLangs = (Spinner) findViewById(R.id.languages_spinner);
+
 
         translationHistBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,12 +45,31 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        final Spinner translateLangs = (Spinner) findViewById(R.id.languages_spinner);
+        pasteFromClipboardBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData.Item data = clipboard.getPrimaryClip().getItemAt(0);
+
+                if (data == null) {
+                    Toast.makeText(context, "Couldn't find data in the clipboard.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN)) {
+                    Toast.makeText(context, "Data in clipboard is not usable in this context.", Toast.LENGTH_SHORT).show();
+                }
+
+                // Put contents into edit text
+                textToTranslateEditText.setText(data.getText());
+            }
+        });
+
+
         translateLangs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 // Get text from edit text
-                EditText textToTranslateEditText = (EditText) findViewById(R.id.text_to_translate);
                 String textToTranslate = "";
 
                 if (!textToTranslateEditText.getText().toString().isEmpty()) {
