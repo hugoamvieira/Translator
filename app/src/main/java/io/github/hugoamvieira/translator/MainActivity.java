@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -49,19 +50,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData.Item data = clipboard.getPrimaryClip().getItemAt(0);
 
-                if (data == null) {
-                    Toast.makeText(context, "Couldn't find data in the clipboard.", Toast.LENGTH_SHORT).show();
-                    return;
+                try {
+                    ClipData.Item data = clipboard.getPrimaryClip().getItemAt(0);
+
+                    if (!clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN)) {
+                        Toast.makeText(context, "Data in clipboard is not usable in this context.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Put contents into edit text
+                    textToTranslateEditText.setText(data.getText());
+
+                } catch (NullPointerException npe) {
+                    npe.printStackTrace();
+                    Log.e(TAG, "There's no data in clipboard");
+                    Toast.makeText(context, "There's no data in the clipboard!", Toast.LENGTH_SHORT).show();
                 }
-
-                if (!clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN)) {
-                    Toast.makeText(context, "Data in clipboard is not usable in this context.", Toast.LENGTH_SHORT).show();
-                }
-
-                // Put contents into edit text
-                textToTranslateEditText.setText(data.getText());
             }
         });
 
